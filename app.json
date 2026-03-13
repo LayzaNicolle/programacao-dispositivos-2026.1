@@ -1,0 +1,19 @@
+{
+  "expo": {
+    "name": "ProfileApp",
+    "slug": "profile-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "3f397bf1-30e0-4d21-b633-f4146f8dbf5b"
+      }
+    },
+    "owner": "viniciussl12"
+  }
+}
