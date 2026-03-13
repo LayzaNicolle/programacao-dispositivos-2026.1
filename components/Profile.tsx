@@ -8,10 +8,9 @@ export default function Profile() {
         source={require('../assets/foto.jpeg')}
         style={styles.image}
       />
-      <Text style={styles.name}>Vinicius</Text>
+      <Text style={styles.name}>Layza Nicolle</Text>
       <Text style={styles.bio}>
-        Estudante de tecnologia apaixonado por desenvolvimento de software.
-        Gosto de criar aplicações web e mobile usando JavaScript e React.
+        Estudante de tecnologia apaixonada por desenvolvimento, design, análise de dados e agora uma grande curiosa e apaixonada por AWS.
         Sempre buscando aprender novas ferramentas e melhorar minhas habilidades.
       </Text>
     </View>
