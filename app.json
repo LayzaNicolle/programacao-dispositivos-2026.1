@@ -11,9 +11,17 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "3f397bf1-30e0-4d21-b633-f4146f8dbf5b"
+        "projectId": "f4925259-970b-4d26-bc6c-d28e4fa08912"
       }
     },
-    "owner": "viniciussl12"
+    "owner": "layzanicolle",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/f4925259-970b-4d26-bc6c-d28e4fa08912"
+    },
+    "android": {},
+    "ios": {}
   }
 }
