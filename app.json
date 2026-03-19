@@ -3,6 +3,7 @@
     "name": "ProfileApp",
     "slug": "profile-app",
     "version": "1.0.0",
+    "privacy": "public",
     "orientation": "portrait",
     "platforms": [
       "ios",
