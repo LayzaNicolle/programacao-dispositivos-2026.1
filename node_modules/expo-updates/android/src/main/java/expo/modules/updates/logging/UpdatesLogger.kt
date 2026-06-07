@@ -1,16 +1,20 @@
 package expo.modules.updates.logging
 
-import android.content.Context
 import expo.modules.core.logging.LogHandlers
 import expo.modules.core.logging.LogType
 import expo.modules.core.logging.Logger
 import expo.modules.core.logging.LoggerTimer
+import java.io.File
 import java.util.Date
+
+interface IUpdatesLogger {
+  fun startTimer(label: String): LoggerTimer
+}
 
 /**
  * Class that implements logging for expo-updates with its own logcat tag
  */
-class UpdatesLogger(context: Context) {
+class UpdatesLogger(filesDirectory: File) : IUpdatesLogger {
 
   fun trace(
     message: String,
@@ -78,43 +82,43 @@ class UpdatesLogger(context: Context) {
 
   fun error(
     message: String,
-    code: UpdatesErrorCode = UpdatesErrorCode.None,
-    exception: Exception? = null
+    cause: Exception,
+    code: UpdatesErrorCode = UpdatesErrorCode.None
   ) {
-    error(message, code, null, null, exception)
+    error(message, cause, code, null, null)
   }
 
   fun error(
     message: String,
+    cause: Exception,
     code: UpdatesErrorCode = UpdatesErrorCode.None,
     updateId: String?,
-    assetId: String?,
-    exception: Exception? = null
+    assetId: String?
   ) {
-    logger.error(logEntryString(message, code, LogType.Error, null, updateId, assetId, exception))
+    logger.error(logEntryWithCauseExceptionString(message, cause, code, LogType.Error, null, updateId, assetId))
   }
 
   fun fatal(
     message: String,
-    code: UpdatesErrorCode = UpdatesErrorCode.None,
-    exception: Exception? = null
+    cause: Exception,
+    code: UpdatesErrorCode = UpdatesErrorCode.None
   ) {
-    fatal(message, code, null, null, exception)
+    fatal(message, cause, code, null, null)
   }
 
   fun fatal(
     message: String,
+    exception: Exception,
     code: UpdatesErrorCode = UpdatesErrorCode.None,
     updateId: String?,
-    assetId: String?,
-    exception: Exception? = null
+    assetId: String?
   ) {
-    logger.fatal(logEntryString(message, code, LogType.Fatal, null, updateId, assetId, exception))
+    logger.fatal(logEntryWithCauseExceptionString(message, exception, code, LogType.Fatal, null, updateId, assetId))
   }
 
-  fun startTimer(label: String): LoggerTimer {
+  override fun startTimer(label: String): LoggerTimer {
     return logger.startTimer { duration ->
-      logEntryString(label, UpdatesErrorCode.None, LogType.Timer, duration, null, null, null)
+      logEntryString(label, UpdatesErrorCode.None, LogType.Timer, duration, null, null)
     }
   }
 
@@ -123,34 +127,20 @@ class UpdatesLogger(context: Context) {
   private val logger = Logger(
     listOf(
       LogHandlers.createOSLogHandler(EXPO_UPDATES_LOGGING_TAG),
-      LogHandlers.createPersistentFileLogHandler(context, EXPO_UPDATES_LOGGING_TAG)
+      LogHandlers.createPersistentFileLogHandler(filesDirectory, EXPO_UPDATES_LOGGING_TAG)
     )
   )
 
-  private fun logEntryString(
+  private fun logEntryWithCauseExceptionString(
     message: String,
+    exception: Exception,
     code: UpdatesErrorCode,
     level: LogType,
     duration: Long?,
     updateId: String?,
-    assetId: String?,
-    exception: Exception? = null
+    assetId: String?
   ): String {
     val timestamp = Date().time
-
-    val throwable = exception as? Throwable ?: Throwable()
-
-    val stacktrace = when (level) {
-      // Limit stack to 20 frames
-      LogType.Error -> throwable.stackTrace.take(MAX_FRAMES_IN_STACKTRACE)
-        .map { f -> f.toString() }
-      LogType.Fatal -> throwable.stackTrace.take(MAX_FRAMES_IN_STACKTRACE)
-        .map { f -> f.toString() }
-      else -> {
-        null
-      }
-    }
-
     val logEntry = UpdatesLogEntry(
       timestamp,
       message,
@@ -159,7 +149,30 @@ class UpdatesLogger(context: Context) {
       duration,
       updateId,
       assetId,
-      stacktrace
+      stacktrace = exception.stackTrace.take(MAX_FRAMES_IN_STACKTRACE).map { f -> f.toString() }
+    )
+
+    return logEntry.asString()
+  }
+
+  private fun logEntryString(
+    message: String,
+    code: UpdatesErrorCode,
+    level: LogType,
+    duration: Long?,
+    updateId: String?,
+    assetId: String?
+  ): String {
+    val timestamp = Date().time
+    val logEntry = UpdatesLogEntry(
+      timestamp,
+      message,
+      code.code,
+      level.type,
+      duration,
+      updateId,
+      assetId,
+      stacktrace = null
     )
 
     return logEntry.asString()

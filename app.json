@@ -12,15 +12,15 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "f4925259-970b-4d26-bc6c-d28e4fa08912"
+        "projectId": "b38af73d-e296-4217-bc01-06ea0d60109f"
       }
     },
-    "owner": "layzanicolle",
+    "owner": "mobile20261",
     "runtimeVersion": {
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/f4925259-970b-4d26-bc6c-d28e4fa08912"
+      "url": "https://u.expo.dev/b38af73d-e296-4217-bc01-06ea0d60109f"
     },
     "android": {},
     "ios": {}
